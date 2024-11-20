@@ -1,0 +1,23 @@
+CXX = mpicxx
+GA_PATH = $(HOME)/builds/ga-sparse-ompi
+DBGFLAGS = -g -fomit-frame-pointer
+	OPTFLAGS = $(DBGFLAGS) -O3 
+SNTFLAGS = -std=c++11 -fsanitize=address -O1 -fno-omit-frame-pointer
+CXXFLAGS = -std=c++11 -I$(GA_PATH)/include/ga $(OPTFLAGS) -I.
+LDFLAGS = -L$(GA_PATH)/lib -lcomex -larmci -L$(GA_PATH)/lib64 -lga -lpthread -ldl -lrt 
+
+OBJ = sprs_dnn.o
+TARGET = sprs_dnn.x 
+
+all: $(TARGET)
+
+%.o: %.cpp
+	$(CXX) $(INCLUDE) $(CXXFLAGS) -c -o $@ $^
+
+$(TARGET):  $(OBJ)
+	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS) 
+
+.PHONY: clean
+
+clean:
+	rm -rf *~ $(OBJ) $(TARGET) *.dSYM
